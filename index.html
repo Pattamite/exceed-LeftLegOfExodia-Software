@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" type="text/css" href="/timedropper.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:100' rel='stylesheet' type='text/css'>
+    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="/CircularLoader-v1.2.js"></script>
+    <script src="/jquery.combinedScroll.js"></script>
+    <script src="/timedropper.js"></script>
+    <link rel="stylesheet" href="/button.css">
+    <link rel="stylesheet" href="/button2.css">
+    <link rel="stylesheet" href="/switch.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/LoadGo/2.1/loadgo.min.js"></script>
+    <script src="amcharts/amcharts.js" type="text/javascript"></script>
+    <script src="amcharts/serial.js" type="text/javascript"></script>
+    <script src="amcharts/amstock.js" type="text/javascript"></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+    <script type="text/javascript">
+        var chartData1 = [];
+        var chartData2 = [];
+        var chartData3 = [];
+        var chartData4 = [];
+        var chartData5 = [];
+        var limitGrowth = 2200;
+        var seasonDay = [40, 25, 35]; //0>summer 1>rain 2>winter
+        var seasonData = [
+            [60, 55, 60, 35, 18, 242 * 24],
+            [150, 75, 30, 25, 3, 154 * 24],
+            [100, 45, 45, 20, 10, 120 * 24]
+        ]; //0>summer 1>rain 2>winter
+        var nowGrowth = 0;
+        var seasonNum;
+        var chart2value = [{
+            "color": "#00c853",
+            "season": "Summer",
+            "value": seasonData[0][0]
+        }, {
+            "color": "#00e676",
+            "season": "Rain",
+            "value": seasonData[1][0]
+        }, {
+            "color": "#69f0ae",
+            "season": "Winter",
+            "value": seasonData[2][0]
+        }, {
+            "color": "#006064",
+            "season": " Summer ",
+            "value": seasonData[0][1]
+        }, {
+            "color": "#00838f",
+            "season": " Rain ",
+            "value": seasonData[1][1]
+        }, {
+            "color": "#0097a7",
+            "season": " Winter ",
+            "value": seasonData[2][1]
+        }, {
+            "color": "#ffd600",
+            "season": "  Summer  ",
+            "value": seasonData[0][2]
+        }, {
+            "color": "#ffea00",
+            "season": "  Rain  ",
+            "value": seasonData[1][2]
+        }, {
+            "color": "#ffff00",
+            "season": "  Winter  ",
+            "value": seasonData[2][2]
+        }, {
+            "color": "#f4511e",
+            "season": "   Summer   ",
+            "value": seasonData[0][3]
+        }, {
+            "color": "#ff5722",
+            "season": "   Rain   ",
+            "value": seasonData[1][3]
+        }, {
+            "color": "#ff7043",
+            "season": "   Winter   ",
+            "value": seasonData[2][3]
+        }, {
+            "color": "#29b6f6",
+            "season": "    Summer    ",
+            "value": seasonData[0][4]
+        }, {
+            "color": "#03a9f4",
+            "season": "    Rain    ",
+            "value": seasonData[1][4]
+        }, {
+            "color": "#039be5",
+            "season": "    Winter    ",
+            "value": seasonData[2][4]
+        }]
+
+        function generateChartData() {
+            var firstDate = new Date();
+            var seasonNum
+            if (firstDate.getMonth() <= 1) seasonNum = 2;
+            else if (firstDate.getMonth() <= 5) seasonNum = 0;
+            else if (firstDate.getMonth() <= 9) seasonNum = 1;
+            else seasonNum = 2;
+            //console.log(firstDate);
+            var a1 = Math.random() * (limitGrowth / seasonDay[seasonNum]); //growth
+            var a2 = 0; //humidity
+            var a3 = 0; //UV
+            var a4 = 0; //Temperature
+            var a5 = 0; //Water
+            nowGrowth = nowGrowth + a1;
+            //console.log(a1, a2, a3, a4, nowGrowth);
+            chartData1.push({
+                date: firstDate,
+                value: a1,
+            });
+            chartData2.push({
+                date: firstDate,
+                value: a2,
+            });
+            chartData3.push({
+                date: firstDate,
+                value: a3,
+            });
+            chartData4.push({
+                date: firstDate,
+                value: a4,
+            });
+            chartData5.push({
+                date: firstDate,
+                value: a5,
+            });
+            seasonData[seasonNum][0] = ((seasonData[seasonNum][0] * seasonData[seasonNum][5]) + a1) / (seasonData[seasonNum][5] + 1);
+            seasonData[seasonNum][1] = ((seasonData[seasonNum][1] * seasonData[seasonNum][5]) + a2) / (seasonData[seasonNum][5] + 1);
+            seasonData[seasonNum][2] = ((seasonData[seasonNum][2] * seasonData[seasonNum][5]) + a3) / (seasonData[seasonNum][5] + 1);
+            seasonData[seasonNum][3] = ((seasonData[seasonNum][3] * seasonData[seasonNum][5]) + a4) / (seasonData[seasonNum][5] + 1);
+            seasonData[seasonNum][4] = ((seasonData[seasonNum][4] * seasonData[seasonNum][5]) + a4) / (seasonData[seasonNum][5] + 1);
+            seasonData[seasonNum][5] += 1;
+            if (nowGrowth >= limitGrowth) nowGrowth = 0;
+        }
+        AmCharts.ready(function() {
+            generateChartData();
+            createStockChart();
+        });
+
+        function createStockChart() {
+            var chart = AmCharts.makeChart("chartdiv", {
+                "type": "stock",
+                "theme": "light",
+                "dataSets": [{
+                    "title": "Growth",
+                    "fieldMappings": [{
+                        "fromField": "value",
+                        "toField": "value"
+                    }],
+                    "dataProvider": chartData1,
+                    "categoryField": "date",
+                    "color": "#00e676"
+                }, {
+                    "title": "Humidity",
+                    "fieldMappings": [{
+                        "fromField": "value",
+                        "toField": "value"
+                    }],
+                    "dataProvider": chartData2,
+                    "categoryField": "date",
+                    "color": "#00838f"
+                }, {
+                    "title": "UV",
+                    "fieldMappings": [{
+                        "fromField": "value",
+                        "toField": "value"
+                    }],
+                    "dataProvider": chartData3,
+                    "categoryField": "date",
+                    "color": "#ffea00"
+                }, {
+                    "title": "Temperature",
+                    "fieldMappings": [{
+                        "fromField": "value",
+                        "toField": "value"
+                    }],
+                    "dataProvider": chartData4,
+                    "categoryField": "date",
+                    "color": "#ff5722"
+                }, {
+                    "title": "Water",
+                    "fieldMappings": [{
+                        "fromField": "value",
+                        "toField": "value"
+                    }],
+                    "dataProvider": chartData5,
+                    "categoryField": "date",
+                    "color": "#03a9f4"
+                }],
+                "panels": [{
+                    "title": "Value",
+                    "stockGraphs": [{
+                        "id": "g1",
+                        "valueField": "value",
+                        "comparable": true,
+                        "compareField": "value",
+                        "balloonText": "[[title]]:<b>[[value]]</b>",
+                        "compareGraphBalloonText": "[[title]]:<b>[[value]]</b>"
+                    }],
+                    "stockLegend": {
+                        "periodValueTextComparing": "[[percents.value.close]]%",
+                        "periodValueTextRegular": "[[value.close]]"
+                    }
+                }],
+                "chartScrollbarSettings": {
+                    "graph": "g1"
+                },
+                "chartCursorSettings": {
+                    "valueBalloonsEnabled": true,
+                    "fullWidth": true,
+                    "cursorAlpha": 0.1,
+                    "valueLineBalloonEnabled": true,
+                    "valueLineEnabled": true,
+                    "valueLineAlpha": 0.5
+                },
+                "categoryAxis": {
+                    "minPeriod": "mm",
+                },
+                "categoryAxesSettings": {
+                    "minPeriod": "mm",
+                },
+                "periodSelector": {
+                    "position": "left",
+                    "periods": [{
+                        "period": "DD",
+                        "selected": true,
+                        "count": 1,
+                        "label": "1 day"
+                    }, {
+                        "period": "WW",
+                        "selected": true,
+                        "count": 1,
+                        "label": "1 week"
+                    }, {
+                        "period": "MM",
+                        "selected": true,
+                        "count": 1,
+                        "label": "1 month"
+                    }, {
+                        "period": "YYYY",
+                        "count": 1,
+                        "label": "1 year"
+                    }, {
+                        "period": "YTD",
+                        "label": "YTD"
+                    }, {
+                        "period": "MAX",
+                        "label": "MAX"
+                    }]
+                },
+                "dataSetSelector": {
+                    "position": "left"
+                },
+                "export": {
+                    "enabled": true
+                }
+            });
+            var chart2 = AmCharts.makeChart("chartdiv2", {
+                "type": "serial",
+                "theme": "light",
+                "dataProvider": chart2value,
+                "valueAxes": [{
+                    "gridColor": "#FFFFFF",
+                    "gridAlpha": 0.2,
+                    "axisAlpha": 1
+                }],
+                "gridAboveGraphs": true,
+                "startDuration": 1,
+                "graphs": [{
+                    "balloonText": "[[category]]: <b>[[value]]</b>",
+                    "fillAlphas": 0.8,
+                    "lineAlpha": 0.2,
+                    "type": "column",
+                    "valueField": "value",
+                    "fillColorsField": "color",
+                    "lineColorField": "color"
+                }],
+                "chartCursor": {
+                    "categoryBalloonEnabled": false,
+                    "cursorAlpha": 0,
+                    "zoomable": false
+                },
+                "categoryField": "season",
+                "categoryAxis": {
+                    "gridPosition": "start",
+                    "gridAlpha": 0,
+                    "tickPosition": "start",
+                    "tickLength": 20,
+                    "axisAlpha": 1,
+                    "guides": [{
+                        "category": "Summer",
+                        "toCategory": "Winter",
+                        "label": "Growth (mm.)",
+                        "lineAlpha": 0.2,
+                        "tickLength": 20,
+                        "boldLabel": true,
+                        "expand": true
+                    }, {
+                        "category": "Summer",
+                        "toCategory": "Winter",
+                        "tickLength": 40,
+                        "expand": true
+                    }, {
+                        "category": " Summer ",
+                        "toCategory": " Winter ",
+                        "label": "Humidity (%)",
+                        "lineAlpha": 0.2,
+                        "tickLength": 20,
+                        "boldLabel": true,
+                        "expand": true
+                    }, {
+                        "category": " Summer ",
+                        "toCategory": " Winter ",
+                        "tickLength": 40,
+                        "expand": true
+                    }, {
+                        "category": "  Summer  ",
+                        "toCategory": "  Winter  ",
+                        "label": "UV (%)",
+                        "lineAlpha": 0.2,
+                        "tickLength": 20,
+                        "boldLabel": true,
+                        "expand": true
+                    }, {
+                        "category": "  Summer  ",
+                        "toCategory": "  Winter  ",
+                        "tickLength": 40,
+                        "expand": true
+                    }, {
+                        "category": "   Summer   ",
+                        "toCategory": "   Winter   ",
+                        "label": "Temperature (C)",
+                        "lineAlpha": 0.2,
+                        "tickLength": 20,
+                        "boldLabel": true,
+                        "expand": true
+                    }, {
+                        "category": "   Summer   ",
+                        "toCategory": "   Winter   ",
+                        "tickLength": 40,
+                        "expand": true
+                    }, {
+                        "category": "    Summer    ",
+                        "toCategory": "    Winter    ",
+                        "label": "Water",
+                        "lineAlpha": 0.2,
+                        "tickLength": 20,
+                        "boldLabel": true,
+                        "expand": true
+                    }, {
+                        "category": "    Summer    ",
+                        "toCategory": "    Winter    ",
+                        "tickLength": 40,
+                        "expand": true
+                    }]
+                }
+            });
+            // set up the chart to update every second
+            var oldtall = 0;
+            var a1, a2, a3, a4, a5;
+            setInterval(function() {
+                // remove datapoint from the beginning
+                // chartData1.shift();
+                // chartData2.shift();
+                // chartData3.shift();
+                // chartData4.shift();
+                // add new datapoint at the end
+                var newDate = new Date(chartData1[chartData1.length - 1].date);
+                newDate.setHours(newDate.getHours() + 1);
+
+                $.ajax({
+                        url: 'http://10.32.176.4/eXodia'
+                    })
+                    .done(
+                        function(rawdata) {
+                            var data = rawdata.split("_");
+                            var dataID = data[0];
+                            var roofStatus = parseInt(data[5]);
+                            console.log(data[5]);
+                            if (dataID == "00" && roofStatus <= 0) {
+                                var tall = parseFloat(data[1]);
+                                var humid = parseFloat(data[2]);
+                                var uv = parseFloat(data[3]);
+                                var temp = parseFloat(data[4]);
+                                //var water = parseFloat(data[5]);
+                                var water = Math.random() * 20.0;
+                                var growth = tall - oldtall;
+                                oldtall = tall;
+                                //logList.html("LOG : " + rawdata + '\n' + oldLog );
+                                a1 = growth * 100;
+                                a2 = humid;
+                                a3 = uv;
+                                a4 = temp;
+                                a5 = water;
+                                console.log("A : " + a1, a2, a3, a4, a5);
+                                if (a1 !== -9999) {
+                                    chart.dataSets[0].dataProvider.push({
+                                        date: newDate,
+                                        value: a1,
+                                    });
+                                }
+                                chart.dataSets[1].dataProvider.push({
+                                    date: newDate,
+                                    value: a2,
+                                });
+                                chart.dataSets[2].dataProvider.push({
+                                    date: newDate,
+                                    value: a3,
+                                });
+                                chart.dataSets[3].dataProvider.push({
+                                    date: newDate,
+                                    value: a4,
+                                });
+                                chart.dataSets[4].dataProvider.push({
+                                    date: newDate,
+                                    value: a5,
+                                });
+                                //console.log("push");
+                                if (newDate.getMonth() <= 1) seasonNum = 2;
+                                else if (newDate.getMonth() <= 5) seasonNum = 0;
+                                else if (newDate.getMonth() <= 9) seasonNum = 1;
+                                else seasonNum = 2;
+                                var one = (seasonData[seasonNum][1] * seasonData[seasonNum][5]);
+                                var two = seasonData[seasonNum][5] + 1;
+                                //console.log(one , two);
+                                if (a1 !== -9999) seasonData[seasonNum][0] = ((seasonData[seasonNum][0] * (seasonData[seasonNum][5] / 24)) + a1) / ((seasonData[seasonNum][5] / 24) + 1);
+                                seasonData[seasonNum][1] = ((seasonData[seasonNum][1] * seasonData[seasonNum][5]) + a2) / (seasonData[seasonNum][5] + 1);
+                                seasonData[seasonNum][2] = ((seasonData[seasonNum][2] * seasonData[seasonNum][5]) + a3) / (seasonData[seasonNum][5] + 1);
+                                seasonData[seasonNum][3] = ((seasonData[seasonNum][3] * seasonData[seasonNum][5]) + a4) / (seasonData[seasonNum][5] + 1);
+                                seasonData[seasonNum][4] = ((seasonData[seasonNum][4] * seasonData[seasonNum][5]) + a4) / (seasonData[seasonNum][5] + 1);
+                                seasonData[seasonNum][5] += 1;
+                                if (nowGrowth >= limitGrowth) nowGrowth = 0;
+                                //console.log(seasonData[seasonNum] , newDate.getMonth(), seasonNum);
+                                chart2value[0].value = seasonData[0][0];
+                                chart2value[1].value = seasonData[1][0];
+                                chart2value[2].value = seasonData[2][0];
+                                chart2value[3].value = seasonData[0][1];
+                                chart2value[4].value = seasonData[1][1];
+                                chart2value[5].value = seasonData[2][1];
+                                chart2value[6].value = seasonData[0][2];
+                                chart2value[7].value = seasonData[1][2];
+                                chart2value[8].value = seasonData[2][2];
+                                chart2value[9].value = seasonData[0][3];
+                                chart2value[10].value = seasonData[1][3];
+                                chart2value[11].value = seasonData[2][3];
+                                chart2value[12].value = seasonData[0][4];
+                                chart2value[13].value = seasonData[1][4];
+                                chart2value[14].value = seasonData[2][4];
+                            } else if (dataID == "00") {
+                                //console.log("pass");
+                                var humid = parseFloat(data[2]);
+                                var uv = parseFloat(data[3]);
+                                var temp = parseFloat(data[4]);
+                                var water = Math.random() * 20.0;
+                                var growth = -9999;
+                                //logList.html("LOG : " + rawdata + '\n' + oldLog );
+                                a1 = growth;
+                                a2 = humid;
+                                a3 = uv;
+                                a4 = temp;
+                                a5 = water;
+
+                                if (a1 !== -9999) {
+                                    chart.dataSets[0].dataProvider.push({
+                                        date: newDate,
+                                        value: a1,
+                                    });
+                                }
+                                chart.dataSets[1].dataProvider.push({
+                                    date: newDate,
+                                    value: a2,
+                                });
+                                chart.dataSets[2].dataProvider.push({
+                                    date: newDate,
+                                    value: a3,
+                                });
+                                chart.dataSets[3].dataProvider.push({
+                                    date: newDate,
+                                    value: a4,
+                                });
+                                chart.dataSets[4].dataProvider.push({
+                                    date: newDate,
+                                    value: a5,
+                                });
+                                //console.log("push");
+                                if (newDate.getMonth() <= 1) seasonNum = 2;
+                                else if (newDate.getMonth() <= 5) seasonNum = 0;
+                                else if (newDate.getMonth() <= 9) seasonNum = 1;
+                                else seasonNum = 2;
+                                //var one = (seasonData[seasonNum][1] * seasonData[seasonNum][5]);
+                                //var two = seasonData[seasonNum][5] + 1;
+                                //console.log(one , two);
+                                if (a1 !== -9999) seasonData[seasonNum][0] = ((seasonData[seasonNum][0] * (seasonData[seasonNum][5] / 24)) + a1) / ((seasonData[seasonNum][5] / 24) + 1);
+                                seasonData[seasonNum][1] = ((seasonData[seasonNum][1] * seasonData[seasonNum][5]) + a2) / (seasonData[seasonNum][5] + 1);
+                                seasonData[seasonNum][2] = ((seasonData[seasonNum][2] * seasonData[seasonNum][5]) + a3) / (seasonData[seasonNum][5] + 1);
+                                seasonData[seasonNum][3] = ((seasonData[seasonNum][3] * seasonData[seasonNum][5]) + a4) / (seasonData[seasonNum][5] + 1);
+                                seasonData[seasonNum][4] = ((seasonData[seasonNum][4] * seasonData[seasonNum][5]) + a4) / (seasonData[seasonNum][5] + 1);
+                                seasonData[seasonNum][5] += 1;
+                                if (nowGrowth >= limitGrowth) nowGrowth = 0;
+                                //console.log(seasonData[seasonNum] , newDate.getMonth(), seasonNum);
+                                chart2value[0].value = seasonData[0][0];
+                                chart2value[1].value = seasonData[1][0];
+                                chart2value[2].value = seasonData[2][0];
+                                chart2value[3].value = seasonData[0][1];
+                                chart2value[4].value = seasonData[1][1];
+                                chart2value[5].value = seasonData[2][1];
+                                chart2value[6].value = seasonData[0][2];
+                                chart2value[7].value = seasonData[1][2];
+                                chart2value[8].value = seasonData[2][2];
+                                chart2value[9].value = seasonData[0][3];
+                                chart2value[10].value = seasonData[1][3];
+                                chart2value[11].value = seasonData[2][3];
+                                chart2value[12].value = seasonData[0][4];
+                                chart2value[13].value = seasonData[1][4];
+                                chart2value[14].value = seasonData[2][4];
+                            }
+                        });
+                //console.log("a : " + a1, a2, a3, a4, a5);
+
+                chart.validateData();
+                chart2.validateData();
+                // adjust zoom
+                var newStartHours = new Date(chart.startDate.getTime());
+                newStartHours.setHours(newStartHours.getHours());
+                var newEndHours = new Date(chart.endDate.getTime());
+                newEndHours.setHours(newEndHours.getHours() + 1);
+                chart.zoom(newStartHours, newEndHours);
+            }, 5000);
+        }
+    </script>
+
+
+
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top page-navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#home">eXodia Box</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li><a href="#section-one">Control Panel</a></li>
+                    <li><a href="#section-two">Progression</a></li>
+                    <li><a href="#section-three">Data Analytic</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <form class="navbar-form navbar-left" role="search">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Set LCD text" id="text-input">
+                        </div>
+                        <button type="submit" class="btn btn-default" id="text-submit">Submit</button>
+                    </form>
+                    <li><a href="#about">About Us</a></li>
+                </ul>
+            </div>
+        </nav>
+
+
+
+        <div id="home" class="row" style="padding-bottom: 300px; padding-top: 150px;">
+            <h1 style="text-align: center;" id="text1">eXodia Box</h1>
+            <h2 style="color: #A020F0; text-align: center;" id="text2">Future Life</h2>
+
+        </div>
+
+        <div id="section-one" class="row" style="padding-bottom: 100px; padding-top: 100px;">
+            <div class="col-md-offset-3 col-md-6 " style="padding-bottom: 30px">
+                <h1 style="text-align: center; color: black; font-size: 80px;">Control Panel</h1>
+                <div class="row" style="padding-bottom: 30px">
+                    <div class="col-md-6" style="text-align: center; color: black; font-size: 40px;">
+                        <h2>Humidity</h2></div>
+                    <div class="col-md-6" style="text-align: center; color: black; font-size: 40px;">
+                        <h2>UV Index</h2></div>
+                </div>
+                <div class="row" style="padding-bottom: 30px">
+                    <div id="divProgress" class="col-md-6"></div>
+                    <div id="divProgress2" class="col-md-6"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" style="text-align: center;">
+                        <button type="button" class="button" style="vertical-align:middle" data-target="#myModal" data-toggle="modal"><span>Watering </span></button>
+
+                        <div id="myModal" class="modal fade" role="dialog">
+                            <div class="modal-dialog modal-lg">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h2 class="modal-title">Watering Control</h2>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- pop up -->
+                                        <!-- Steps Progress Bar -->
+                                        <!-- done half active-->
+                                        <div class="progress" style="margin-top: -50px">
+                                            <div class="circle">
+                                                <span class="label">1</span>
+                                                <span class="title">20 ml.</span>
+                                            </div>
+
+                                            <span class="bar"></span>
+
+                                            <div class="circle">
+                                                <span class="label">2</span>
+                                                <span class="title">40 ml.</span>
+                                            </div>
+
+                                            <span class="bar"></span>
+
+                                            <div class="circle">
+                                                <span class="label">3</span>
+                                                <span class="title">60 ml.</span>
+                                            </div>
+
+                                            <span class="bar"></span>
+
+                                            <div class="circle">
+                                                <span class="label">4</span>
+                                                <span class="title">80 ml.</span>
+                                            </div>
+
+                                            <span class="bar"></span>
+
+                                            <div class="circle">
+                                                <span class="label">5</span>
+                                                <span class="title">100 ml.</span>
+                                            </div>
+                                        </div>
+                                        <!-- button water -->
+                                        <button type="button" class="btn-border " id="waterbutton">Water</button>
+                                        <!-- set time -->
+                                        </br>
+                                        <input type="text" id="alarm" style="margin-top: 50px" />
+
+                                    </div>
+                                    <div class="modal-footer">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6" style="text-align: center;">
+                        <button type="button" class="button2" style="vertical-align:middle" data-target="#myModal2" data-toggle="modal"><span>Roof Control</span></button>
+                        <div id="myModal2" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h2 class="modal-title">Roof Control</h2>
+                                    </div>
+
+                                    <div class="modal-body">
+
+                                        <span style="font-size: 140%; position:absolute;">Switch  </span>
+
+                                        <div class="onoffswitch" style="margin-left: 150px;">
+                                            <button type="button" class="btn btn-info" style="background: #17B05B; color: white; border-color: gray;  " id="onoff">OPEN</button>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <p style="color : white" id="doorStatus">Status : Closed</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div id="section-two" class="row" style="padding-bottom: 200px; padding-top: 100px;">
+
+            <div class="col-md-offset-3 col-md-6 ">
+                <div class="col-md-offset-3 col-md-6 ">
+                    <div class="row" style="padding-bottom: 20px;">
+                        <h1 style="text-align: center; color: black; font-size: 80px;">Progression</h1>
+                    </div>
+
+                </div>
+                <div class="col-md-offset-2 col-md-6 ">
+
+                    <div class="row">
+                        <div>
+                            <img src="/assets/plant.png" id="plant-img"></img>
+                        </div>
+                        <!-- <button id="clickPant">click</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="section-three" class="row" style="padding-bottom: 100px; padding-top: 100px;">
+
+
+            <h1 style="text-align: center; color: black; font-size: 80px;">Data Analytic</h1>
+
+            <div id="chartdiv" style="width:75%; height:500px;" class="graphCenter"></div>
+            <br />
+            <div id="chartdiv2" style="width:75%; height:350px;" class="graphCenter"></div>
+
+
+        </div>
+        <div id="about" class="row" style="padding-bottom: 100px; padding-top: 100px;">
+
+            <h1 style="text-align: center; color: black; font-size: 80px; padding-bottom: 400px;">About Us</h1>
+            <p style="text-align: center;">
+                Thanut Sajjakulnukit &nbsp Chanon Ungpansattawong &nbsp Aphisit Leksomboon </br>
+                Jittapat Nawarattanapong &nbsp Phakorn Chutinimitkul &nbsp Chayanin Tongphasook</br>
+                Keetawat Srichompoo &nbsp Tatsanun Kitisrirungrueang &nbsp Jub Warata
+            </p>
+
+        </div>
+
+        <script type="text/javascript">
+            jQuery(document).ready(function($) {
+
+                // Hook up the current state to the nav bar
+                $('.page-navigation').onePageNav();
+
+            });
+
+            $("#divProgress").circularloader({
+                backgroundColor: "#ffffff", //background colour of inner circle
+                fontColor: "#000000", //font color of progress text
+                fontSize: "50px", //font size of progress text
+                radius: 140, //radius of circle
+                progressBarBackground: "#cdcdcd", //background colour of circular progress Bar
+                progressBarColor: "#5FCBE7", //colour of circular progress bar
+                progressBarWidth: 25, //progress bar width
+                progressPercent: 0, //progress percentage out of 100
+                progressValue: 0, //diplay this value instead of percentage
+                showText: true, //show progress text or not
+            });
+
+            /*Once a cirular progress is generated you can call circular loader function again to increase the progress percentage*/
+            // $("#divProgress").circularloader({
+            //     progressPercent: 70
+            // });
+
+            //$('#myonoffswitch').bootstrapToggle();
+
+            $("#divProgress2").circularloader({
+                backgroundColor: "#ffffff", //background colour of inner circle
+                fontColor: "#000000", //font color of progress text
+                fontSize: "50px", //font size of progress text
+                radius: 140, //radius of circle
+                progressBarBackground: "#cdcdcd", //background colour of circular progress Bar
+                progressBarColor: "#fdbe2d", //colour of circular progress bar
+                progressBarWidth: 25, //progress bar width
+                progressPercent: 0, //progress percentage out of 100
+                progressValue: 0, //diplay this value instead of percentage
+                showText: true, //show progress text or not
+            });
+
+
+            /*Once a cirular progress is generated you can call circular loader function again to increase the progress percentage*/
+            // $("#divProgress2").circularloader({
+            //     progressPercent: 70
+            // });
+
+            $.fn.extend({
+                animateCss: function(animationName) {
+                    var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+                    $(this).addClass('animated ' + animationName).one(animationEnd, function() {
+                        $(this).removeClass('animated ' + animationName);
+                    });
+                }
+            });
+
+            /* Select time */
+
+
+            $("#alarm").timeDropper();
+            //console.log($("#alarm").val());
+
+            var currentWater = 0;
+            $('.progress .circle:nth-of-type(' + 1 + ')').click(function() {
+                currentWater = 1;
+                $('.progress .circle:nth-of-type(' + 1 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 2 + ')').removeClass('done');
+                $('.progress .circle:nth-of-type(' + 3 + ')').removeClass('done');
+                $('.progress .circle:nth-of-type(' + 4 + ')').removeClass('done');
+                $('.progress .circle:nth-of-type(' + 5 + ')').removeClass('done');
+            });
+            $('.progress .circle:nth-of-type(' + 2 + ')').click(function() {
+                currentWater = 2;
+                $('.progress .circle:nth-of-type(' + 1 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 2 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 3 + ')').removeClass('done');
+                $('.progress .circle:nth-of-type(' + 4 + ')').removeClass('done');
+                $('.progress .circle:nth-of-type(' + 5 + ')').removeClass('done');
+            });
+            $('.progress .circle:nth-of-type(' + 3 + ')').click(function() {
+                currentWater = 3;
+                $('.progress .circle:nth-of-type(' + 1 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 2 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 3 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 4 + ')').removeClass('done');
+                $('.progress .circle:nth-of-type(' + 5 + ')').removeClass('done');
+            });
+            $('.progress .circle:nth-of-type(' + 4 + ')').click(function() {
+                currentWater = 4;
+                $('.progress .circle:nth-of-type(' + 1 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 2 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 3 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 4 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 5 + ')').removeClass('done');
+            });
+            $('.progress .circle:nth-of-type(' + 5 + ')').click(function() {
+                currentWater = 5;
+                $('.progress .circle:nth-of-type(' + 1 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 2 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 3 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 4 + ')').addClass('done');
+                $('.progress .circle:nth-of-type(' + 5 + ')').addClass('done');
+            });
+
+            var timestring = $("#alarm").val();
+            var timestring2 = timestring.split(" ");
+            var realtimestring = timestring2[0].split(":");
+            var watertime = new Date();
+            var wateropen = true;
+
+
+            $('#waterbutton').click(function() {
+                var waterbutton = $('#waterbutton').text();
+                if (waterbutton == "Water") {
+                    $('#waterbutton').text('Cancel');
+                    $('#waterbutton').css('background-color', '#B01724');
+                    $('#waterbutton').css('color', 'white');
+
+                    watertime.setFullYear(1990, 1, 1);
+                    watertime = new Date();
+                    watertime.setHours = parseInt(realtimestring[0]) - 1;
+                    watertime.setMinutes = parseInt(realtimestring[1]) - 1;
+                    wateropen = true;
+                    console.log("ok press");
+
+
+                } else {
+                    $('#waterbutton').text('Water');
+                    $('#waterbutton').css('background-color', 'white');
+                    $('#waterbutton').css('color', 'black');
+                    watertime = new Date();
+                    watertime.setFullYear(1990, 1, 1);
+                    $.ajax({
+                        url: 'http://10.32.176.4/eXodia2/' + "00_0_$"
+                    });
+                    wateropen = false;
+
+                }
+            });
+
+            $('#onoff').click(function() {
+                var waterbutton = $('#onoff').text();
+                if (waterbutton == "OPEN") {
+                    $('#onoff').text('CLOSE');
+                    $('#onoff').css('background-color', '#B01724');
+                    $('#doorStatus').html('Status : Opened');
+                    $.ajax({
+                        url: 'http://10.32.176.4/eXodia/' + "00_0_1_$"
+                    });
+
+                } else {
+                    $('#onoff').text('OPEN');
+                    $('#onoff').css('background-color', '#17B05B');
+                    $('#doorStatus').html('Status : Closed');
+
+                    $.ajax({
+                        url: 'http://10.32.176.4/eXodia/' + "00_0_0_$"
+                    });
+                }
+            });
+
+            var start = 0;
+            //jQuery
+            $("#plant-img").load(function() {
+                $('#plant-img').loadgo({
+                    'direction': 'bt'
+                });
+            }).each(function() {
+                if (this.complete) $(this).load();
+            });
+
+            $('#clickPant').click(function() {
+                start += 5;
+                console.log(start);
+                $('#plant-img').loadgo('setprogress', start);
+
+                if (start >= 100) {
+                    start = -5;
+                }
+            });
+            var lidison = true;
+
+            function sendInput(stringData) {
+                var lidnum;
+                if (lidison) lidnum = 1;
+                else lidnum = 0;
+                console.log('http://10.32.176.4/eXodia/' + "00_" + 0 + "_" + lidnum + "_" + stringData);
+                $.ajax({
+                    url: 'http://10.32.176.4/eXodia/' + "00_" + 0 + "_" + lidnum + "_" + stringData
+                }).done(alert('http://10.32.176.4/eXodia/' + "00_" + 0 + "_" + lidnum + "_" + stringData));
+                //rawdata = logID + '-' + stringData;
+            }
+
+            $('#text-submit').click(function() {
+                sendInput($('#text-input').val());
+            })
+
+
+            var HumidText = $('#divProgress');
+            var UVText = $('#divProgress2');
+            var Tree = $('#plant-img');
+            var treeLimit = 22;
+            var nowtime;
+            var tallRatio = 0;
+
+
+            setInterval
+                (
+
+                    function() {
+                        nowtime = new Date();
+                        if (nowtime.getFullYear() == watertime.getFullYear() && nowtime.getHours() == watertime.getHours() && nowtime.getMinutes() == watertime.getMinutes()) {
+                            if (wateropen) {
+                                console.log("water open");
+                                $.ajax({
+                                    url: 'http://10.32.176.4/eXodia2/' + "10_1_$"
+                                });
+                                watertime.setMinutes = watertime.getMinutes() + currentWater;
+                                wateropen = false;
+                            } else {
+                                console.log("water close");
+                                $.ajax({
+                                    url: 'http://10.32.176.4/eXodia2/' + "10_0_$"
+                                });
+                            }
+
+                        }
+
+
+                        $.ajax({
+                                url: 'http://10.32.176.4/eXodia'
+                            })
+                            .done(
+                                function(rawdata) {
+                                    var data = rawdata.split("_");
+                                    var dataID = data[0];
+                                    if (dataID === "00") {
+
+                                        var tall = parseFloat(data[1]);
+                                        var humid = parseFloat(data[2]);
+                                        var uv = parseFloat(data[3]);
+                                        var temp = parseFloat(data[4]);
+                                        //var water = parseFloat(data[5]);
+                                        avar roof = parseInt(data[5]);
+                                        console.log("enter");
+                                        console.log(roof);
+                                        if (roof <= 999) {
+                                            lidison = false;
+                                            tallRatio = (tall / treeLimit) * 100;
+                                            if (tallRatio < 0) {
+                                                tallRatio = 0;
+                                            } else if (tallRatio > 100) {
+                                                tallRatio = 100;
+                                            }
+                                            console.log("ratio" + tallRatio);
+                                            Tree.loadgo('setprogress', tallRatio);
+                                        } else lidison = true;
+
+                                        if (uv >= 40) {
+
+                                        }
+
+
+                                        $('#divProgress').circularloader({
+                                            progressPercent: humid
+                                        });
+                                        $('#divProgress2').circularloader({
+                                            progressPercent: uv
+                                        });
+
+                                        if (!lidison) {
+                                            $('#onoff').text('OPEN');
+                                            $('#onoff').css('background-color', '#17B05B');
+
+                                        } else {
+                                            $('#onoff').text('CLOSE');
+                                            $('#onoff').css('background-color', '#B01724');
+                                        }
+                                    }
+
+                                }
+                            )
+                    }, 1000);
+        </script>
+
+
+
+
+
+
+        <http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    </body>
+
+</html>

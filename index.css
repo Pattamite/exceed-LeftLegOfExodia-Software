@@ -1,0 +1,178 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+}
+.pad-large {
+    padding: 5em 0;
+}
+.navbar-inverse {
+    background: linear-gradient(to right, #0a326f, #ac356f);
+    color: black;
+}
+.navbar-inverse .navbar-brand {
+    color: white;
+}
+.navbar-inverse .navbar-nav>li>a {
+    color: white;
+}
+
+.modal-title {
+    margin: 0;
+    line-height: 1.42857143;
+    color: white;
+}
+
+.modal-header {
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+    background-image: linear-gradient(to right,#0a326f 0,#ac356f 100%);
+}
+
+.modal-footer {
+    padding: 15px;
+    text-align: right;
+    border-top: 1px solid #e5e5e5;
+    background-image: linear-gradient(to right,#0a326f 0,#ac356f 100%);
+}
+
+.modal-body {
+    position: relative;
+    padding: 100px;
+}
+
+.graphCenter{
+  margin:auto;
+}
+
+#home {
+    background: white;
+}
+
+#section-one {
+    background: #f4f4f4;
+}
+
+#section-two {
+    background: white;
+}
+
+#section-three {
+    background: #f4f4f4;
+}
+
+#text1 {
+    margin-top: 100px;
+    font-size: 200px;
+    background: -webkit-linear-gradient(#0a326f, #ac356f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+#text2 {
+    font-size: 100px;
+    background: -webkit-linear-gradient(#0a326f, #ac356f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.progress {
+    height: 100px;
+    padding-top: 25px;
+    width: 100%;
+    margin: 20px auto;
+    text-align: center;
+}
+
+#waterbutton {
+    border-radius: 4px;
+    background-color: transparent;
+    border-style: solid;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+    border-color: #1E90FF;
+    color: #1E90FF;x
+    height: 100px;
+    width: 150px;
+    transition:
+}
+
+
+#button2{
+    border-radius: 4px;
+    background-color: transparent;
+    border-style: solid;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-width: 1px;
+    border-color: #1E90FF;
+    color: #1E90FF;x
+    height: 100px;
+    width: 300px;
+    transition:
+}
+
+
+.progress .circle, .progress .bar {
+    display: inline-block;
+    background: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    border: 1px solid #d5d5da;
+}
+.progress .bar {
+    position: relative;
+    width: 80px;
+    height: 6px;
+    top: -33px;
+    margin-left: -5px;
+    margin-right: -5px;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+}
+.progress .circle .label {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 32px;
+    margin-top: 3px;
+    color: #b5b5ba;
+    font-size: 17px;
+}
+.progress .circle .title {
+    color: #b5b5ba;
+    font-size: 13px;
+    line-height: 30px;
+    margin-left: -5px;
+}
+
+/* Done / Active */
+
+.progress .bar.done, .progress .circle.done {
+    background: #eee;
+}
+.progress .bar.active {
+    background: linear-gradient(to right, #EEE 40%, #FFF 60%);
+}
+.progress .circle.done .label {
+    color: #FFF;
+    background: #81CE97;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, .2);
+}
+.progress .circle.done .title {
+    color: #444;
+}
+.progress .circle.active .label {
+    color: #FFF;
+    background: #0c95be;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, .2);
+}
+.progress .circle.active .title {
+    color: #0c95be;
+}
